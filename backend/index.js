@@ -11,8 +11,30 @@ app.use(bodyParser.json());
 // Database connection
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  logging: false
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  },
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  }
 });
+
+app.get('/test-db', async (req, res) => {
+  try {
+    const result = await sequelize.query('SELECT NOW()', { type: Sequelize.QueryTypes.SELECT });
+    res.json({ time: result[0].now });
+  } catch (error) {
+    res.status(500).json({ error: 'Database connection failed', details: error.message });
+  }
+});
+
 
 // Enhanced schema analysis
 async function analyzeDatabaseSchema() {
