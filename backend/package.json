@@ -10,12 +10,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.51.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "node-fetch": "^3.3.2",
-    "openai": "^4.99.0",
+    "openai": "^4.100.0",
     "pg": "^8.16.0",
     "sequelize": "^6.37.7"
   },

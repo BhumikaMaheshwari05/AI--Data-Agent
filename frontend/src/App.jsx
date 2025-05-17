@@ -50,8 +50,7 @@ const SAMPLE_QUESTIONS = [
   "Show order status distribution",
   "Are there any data quality issues in our database?"
 ];
-
-const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
 
 function App() {
   const [question, setQuestion] = useState('');
