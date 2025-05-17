@@ -44,13 +44,15 @@ ChartJS.register(
 const SAMPLE_QUESTIONS = [
   "Compare sales between Electronics and Furniture",
   "Show revenue trends over time",
-   "Who are our top 10 customers by spending?",
-  "What are our most popular products?" ,
+  "Who are our top 10 customers by spending?",
+  "What are our most popular products?",
   "How has our customer base grown over time?",
   "Show order status distribution",
   "Are there any data quality issues in our database?"
 ];
-const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+
+// Updated backend URL - use environment variable if available, otherwise use production URL
+const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://ai-data-agent-backend-eg4i.onrender.com';
 
 function App() {
   const [question, setQuestion] = useState('');
@@ -68,7 +70,7 @@ function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-   const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!question.trim()) return;
 
@@ -79,7 +81,6 @@ function App() {
     setQuestion('');
 
     try {
-      // Modify this line to use the backendUrl variable
       const response = await axios.post(`${backendUrl}/api/query`, { question });
       const aiMessage = { 
         sender: 'ai', 
@@ -91,8 +92,13 @@ function App() {
       };
       setConversation(prev => [...prev, aiMessage]);
     } catch (error) {
-      const errorMessage = { sender: 'ai', content: `Error: ${error.response?.data?.error || error.message}` };
+      const errorMessage = { 
+        sender: 'ai', 
+        content: `Error: ${error.response?.data?.error || error.message}`,
+        errorDetails: error.response?.data?.details || ''
+      };
       setConversation(prev => [...prev, errorMessage]);
+      console.error('API Error:', error);
     } finally {
       setLoading(false);
     }
@@ -497,6 +503,24 @@ function App() {
                               Showing 10 of {item.data.length} rows
                             </Typography>
                           )}
+                        </Box>
+                      )}
+
+                      {item.errorDetails && (
+                        <Box mt={2}>
+                          <Divider sx={{ my: 1 }} />
+                          <Typography variant="subtitle2" gutterBottom>
+                            Error Details:
+                          </Typography>
+                          <Paper elevation={0} sx={{ 
+                            p: 1, 
+                            backgroundColor: '#ffeeee', 
+                            borderRadius: 1
+                          }}>
+                            <Typography variant="caption" color="error">
+                              {item.errorDetails}
+                            </Typography>
+                          </Paper>
                         </Box>
                       )}
                     </>

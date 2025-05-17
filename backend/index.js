@@ -5,7 +5,19 @@ const cors = require('cors');
 const { Sequelize } = require('sequelize');
 
 const app = express();
-app.use(cors());
+
+// Configure CORS with specific allowed origins
+const corsOptions = {
+  origin: [
+    'https://ai-data-agent-frontend.onrender.com', // Your production frontend
+    'http://localhost:5173'                       // Local development
+  ],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Database connection
@@ -26,6 +38,11 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   }
 });
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy' });
+});
+
 app.get('/test-db', async (req, res) => {
   try {
     const result = await sequelize.query('SELECT NOW()', { type: Sequelize.QueryTypes.SELECT });
@@ -34,7 +51,6 @@ app.get('/test-db', async (req, res) => {
     res.status(500).json({ error: 'Database connection failed', details: error.message });
   }
 });
-
 
 // Enhanced schema analysis
 async function analyzeDatabaseSchema() {
