@@ -6,8 +6,7 @@ This project is a full-stack AI-powered data agent that connects to a structured
 
 ## 🔗 Live Application
 
-- **Frontend**:https://ai-data-agent-frontend.onrender.com
-- **Backend**: https://ai-data-agent-backend-eg4i.onrender.com
+- **Deployed Link:**:https://ai-data-agent-frontend.onrender.com
 
 ---
 
